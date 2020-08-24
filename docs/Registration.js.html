@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Registration.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Registration.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component,  Fragment} from "react";
+import { withRouter } from "react-router-dom";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
+import Helmet from "react-helmet";
+export class Registeration extends Component {
+    /**
+     * 
+     * @param {props} Property The component receives the argument as a props object. 
+     */
+    constructor(props){
+        super(props)
+      this.state = {
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        repeatPassword: "",
+        register_data: []
+      };  
+    }
+    /**
+     *The componentWillMount() is a chance for us to handle configuration,
+       update our state, and in general prepare for the first render.
+       At this point, props and initial state are defined.
+     */
+  componentDidMount() {
+    ValidatorForm.addValidationRule("isPasswordMatch", value => {
+      if (value !== this.state.password) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  componentWillUnmount() {
+    ValidatorForm.removeValidationRule("isPasswordMatch");
+  }
+  handleChange_FirstName = event => {
+    const firstName = event.target.value;
+    this.setState({ firstName });
+  };
+  handleChange_lastName = event => {
+    const lastName = event.target.value;
+    this.setState({ lastName });
+  };
+  handleChange_email = event => {
+    const email = event.target.value;
+    this.setState({ email });
+  };
+  handleChange_password = event => {
+    const password = event.target.value;
+    this.setState({ password });
+  };
+  handleChange_repeate_password = event => {
+    const repeatPassword = event.target.value;
+    this.setState({ repeatPassword });
+  };
+  /**
+   * After Compleate validation, this handler is use to submit the All user details and make access to main Quiz page and set the data in localStorage.
+   */
+  handleRegisterSubmit = () => {
+    let _register = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName, 
+      email: this.state.email,
+      password: this.state.password,
+      confirm_password: this.state.repeatPassword
+    };
+    this.state.register_data.push(_register);
+    let student_data = JSON.stringify(this.state.register_data);
+      localStorage.setItem('Confirm Your Details', student_data);
+      localStorage.setItem('email', this.state.email)
+      localStorage.setItem('password', this.state.password)
+    this.props.history.replace("/play/instruction");
+  };
+  render() {
+    return (
+        &lt;Fragment>
+       {/**
+         * This is use to give browser name of this Application.
+         */}
+        &lt;Helmet> &lt;title>Quiz App -  Registration&lt;/title>&lt;/Helmet>
+
+        &lt;div id="home_">
+        &lt;section>
+            &lt;div style={{ textAlign:"center"}}>
+                &lt;img src ={require ('../assets/landingPageIcon.svg')} alt="tpglogo" style={{width:"8rem", textAlign:"center", marginBottom:"1rem", marginTop:"1rem"}}/>
+            &lt;/div>
+            &lt;h1>Quiz App&lt;/h1>
+            &lt;div className="play-button-container">&lt;/div>
+            &lt;div className="whole_card">
+                  &lt;div className="all_field">
+                    &lt;ValidatorForm onSubmit={this.handleRegisterSubmit}>
+                      &lt;div className="field">
+                        &lt;TextValidator
+                          label="First name"
+                          onChange={this.handleChange_FirstName}
+                          name="firstName"
+                          type="firstName"
+                          variant="outlined"
+                          fullWidth
+                          validators={["required"]}
+                          errorMessages={["this field is required"]}
+                          value={this.state.firstName}/>
+                      &lt;/div>
+                      &lt;div className="field">
+                        &lt;TextValidator
+                          label="Last name"
+                          onChange={this.handleChange_lastName}
+                          name="lastName"
+                          type="lastName"
+                          variant="outlined"
+                          fullWidth
+                          validators={["required"]}
+                          errorMessages={["this field is required"]}
+                          value={this.state.lastName} />
+                      &lt;/div>
+                      &lt;div className="field">
+                        &lt;TextValidator
+                          className="field"
+                          label="Email"
+                          onChange={this.handleChange_email}
+                          name="email"
+                          variant="outlined"
+                          fullWidth
+                          value={this.state.email}
+                          validators={["required", "isEmail"]}
+                          errorMessages={[ "this field is required","email is not valid" ]}/>
+                      &lt;/div>
+                      &lt;div className="field">
+                        &lt;TextValidator
+                          className="field"
+                          label="Password"
+                          onChange={this.handleChange_password}
+                          name="password"
+                          type="password"
+                          variant="outlined"
+                          fullWidth
+                          validators={["required"]}
+                          errorMessages={["this field is required"]}
+                          value={this.state.password} />
+                      &lt;/div>
+                      &lt;div className="field">
+                        &lt;TextValidator
+                          className="field"
+                          label="Repeat password"
+                          onChange={this.handleChange_repeate_password}
+                          name="repeatPassword"
+                          type="password"
+                          variant="outlined"
+                          fullWidth
+                          validators={["isPasswordMatch", "required"]}
+                          errorMessages={["password mismatch", "this field is required" ]}
+                          value={this.state.repeatPassword} />
+                      &lt;/div>
+                      &lt;div className="p-buuton">
+                      &lt;button fullWidth type="submit" className="play-button_" style={{borderStyle: "none", border: "2px solid",
+        background: "bottom"}}>Register  and Play Quiz&lt;/button>&lt;/div>
+                    &lt;/ValidatorForm>
+                  &lt;/div>
+            &lt;/div>
+            &lt;/section>
+            &lt;/div>
+      
+     &lt;/Fragment> 
+    );
+  }
+}
+/**
+ * Make available for another file and folder.
+ */
+export default withRouter(Registeration);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Login_Login.html">Login</a></li><li><a href="Play_Play.html">Play</a></li><li><a href="QuizSummary_QuizSummary.html">QuizSummary</a></li><li><a href="Registeration_Registeration.html">Registeration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Home">Home</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Thu Apr 30 2020 20:13:00 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

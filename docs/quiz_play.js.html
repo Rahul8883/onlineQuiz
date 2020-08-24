@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: quiz/play.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: quiz/play.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component, Fragment } from 'react'
+import { Helmet } from "react-helmet";
+import Lifeline from '../../assets/lifeline.svg'
+import Bulb from '../../assets/50-50.svg'
+import Countdown from '../../assets/countdown.svg'
+import question from '../../question.json';
+import isEmpty from '../../utils/is-Empty';
+// import M from 'materialize-css';
+import correctNotification from '../../assets/audio/Correct-answer.mp3';
+import wrongNotification from '../../assets/audio/Wrong-answer-sound-effect.mp3';
+import buttonNotification from '../../assets/audio/button-3.mp3';
+import classnames from 'classnames'
+export class Play extends Component {
+     /**
+     * 
+     * @param {props} Property The component receives the argument as a props object. 
+     */
+    constructor(props) {
+        super(props)
+    
+        this.state = {
+             questions :question,
+             currentQuestion :{},
+             nextQuestion:{},
+             previousQuestion:{},
+             answer : "",
+             numberOfQuestions : 0,
+             numberOfAnsweredQuestion:0,
+             currentQuestionIndex:0,
+             score:0,
+             correctAnswers:0,
+             wrongAnswers:0,
+             hints:5,
+             fiftyfifty:2,
+             usedFiftyFiofty:false,
+             time : {},
+             nextButtonDisabled : false,
+             previousButtonDisabled : true
+        }
+        this.interval = null;
+        this.correctSound = React.createRef();
+        this.wrongSound = React.createRef();
+        this.buttonSound =React.createRef();
+    }
+
+componentDidMount () { 
+    const { questions, currentQuestion, nextQuestion, previousQuestion} = this.state;
+    this.displayQuestions ( questions, currentQuestion, nextQuestion, previousQuestion);
+    this.startTimer();
+}
+
+componentWillMount(){
+    clearInterval(this.interval)
+}
+/**
+ * @param {questions} questions Questions of this Quiz.
+ * @param {currentQuestion} currentQuestion Current question of this quiz which is appear in display(only one at that time).
+ * @param {nextQuestion} nextQuestion Next question which is occur when finish the current question.
+ * @param {previousQuestion} previousQuestion Previous question which is left or may be you want to recheck.
+ */
+displayQuestions = (questions = this.state.questions, currentQuestion, nextQuestion, previousQuestion)=>{
+    let {currentQuestionIndex}= this.state;
+    if(!isEmpty(questions)){
+        questions = this.state.questions;
+        currentQuestion = questions[currentQuestionIndex];
+        nextQuestion = questions[currentQuestionIndex + 1];
+        previousQuestion = questions[currentQuestionIndex - 1];
+        const answer = currentQuestion.answer;
+        /**
+         * This is use to setting the state using setState.
+         */
+        this.setState({
+            currentQuestion,
+            nextQuestion,
+            previousQuestion,
+            numberOfQuestions: questions.length,
+            answer
+        }, ()=>{
+            /**
+             * This is method binding process (To call the handleDisableButton()) for performing action on screen.
+             */
+            this.handleDisableButton();
+        })
+    }
+    }
+/**
+ * handleOptionClick, is use to handle option for select and check either correct or wrong.
+ */
+    handleOptionClick=(e)=>{
+       if(e.target.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) { 
+           setTimeout(()=>{
+            this.correctSound.current.play();
+           }, 500)
+           /**
+            * correct answer method binding.
+            */
+           this.correctAnswer ();
+       }else{
+        setTimeout(()=>{
+            this.wrongSound.current.play();
+           }, 500) 
+           /**
+            *  Wrong answer method binding.
+            */
+           this.wrongAnswer();
+       }
+    }
+    /**
+     * handleNextButtonClick, This handler method is to handle the next button click. 
+     */
+    handleNextButtonClick =()=>{
+        /**
+         * playButtonSound, method binding.
+         */
+        this.playButtonSound();
+        if(this.state.nextQuestion !== undefined){
+            this.setState(prevState =>({
+                currentQuestionIndex : prevState.currentQuestionIndex  + 1
+            }), ()=>{
+                /**
+                 * @param {currentQuestion} currentQuestion Current question of this quiz which is appear in display(only one at that time).
+                 * @param {nextQuestion} nextQuestion Next question which is occur when finish the current question.
+                 * @param {previousQuestion } previousQuestion Previous question which is left or may be you want to recheck.
+                 */
+                this.displayQuestions(this.state.state, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion)
+            })
+        }
+    }
+    /**
+     * handleNextButtonClick, This handler method is to handle the next button click. 
+     */
+    handlePreviousButtonClick =()=>{
+         /**
+         * playButtonSound, method binding.
+         */
+        this.playButtonSound();
+        if(this.state.previousQuestion !== undefined){
+            this.setState(prevState =>({
+                currentQuestionIndex : prevState.currentQuestionIndex  - 1
+            }), ()=>{
+                 /**
+                 * @param {currentQuestion} currentQuestion Current question of this quiz which is appear in display(only one at that time).
+                 * @param {nextQuestion} nextQuestion Next question which is occur when finish the current question.
+                 * @param {previousQuestion } previousQuestion Previous question which is left or may be you want to recheck.
+                 */
+                this.displayQuestions(this.state.state, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion)
+            })
+        }
+    }
+    /**
+     * handleNextButtonClick, This handler method is to handle the next button click. 
+     */
+    handleQuitButtonClick =()=>{  
+         /**
+         * playButtonSound, method binding.
+         */      
+        this.playButtonSound();
+       if( window.confirm('Are you sure, you want to Quit?')){
+           this.props.history.push('/')
+       }
+    }
+
+handleButtonClick=(e)=>{
+    switch(e.target.id) {
+        case "next-button":
+            this.handleNextButtonClick();
+            break;
+        case "previous-button" : 
+            this.handlePreviousButtonClick();
+            break;
+            case "quit-button" : 
+            this.handleQuitButtonClick();
+            break;
+            
+            default : 
+            break;
+    }
+       
+}
+
+playButtonSound = ()=>{
+    this.buttonSound.current.play();   
+}
+
+correctAnswer =() => {
+        // M.toast({html: 'Correct answer!',
+        //         classes : 'toast valid ',
+        //          displayLength : 1500 })
+
+
+      
+        this.setState(prevState =>({
+            score : prevState.score + 1,
+            correctAnswers : prevState.correctAnswers + 1,
+            currentQuestionIndex : prevState.currentQuestionIndex + 1,
+            numberOfAnsweredQuestion : prevState.numberOfAnsweredQuestion + 1
+        }), () =>{
+            if(this.state.nextQuestion === undefined){
+                this.endGame();
+            }else{
+                /**
+ * @param {questions} questions Questions of this Quiz.
+ * @param {currentQuestion} currentQuestion Current question of this quiz which is appear in display(only one at that time).
+ * @param {nextQuestion} nextQuestion Next question which is occur when finish the current question.
+ * @param {previousQuestion} previousQuestion Previous question which is left or may be you want to recheck.
+ */
+                this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion)   
+
+            }        })
+    }
+
+    wrongAnswer =() => {
+        navigator.vibrate(1000);
+        // M.toast({
+        //     html : "Wrong answer !",
+        //     classes : "toast invalid",
+        //     displayLength : 1500
+        // });
+        this.setState(prevState =>({
+           wrongAnswers : prevState.wrongAnswers + 1,
+           currentQuestionIndex : prevState.currentQuestionIndex + 1,
+           numberOfAnsweredQuestion : prevState.numberOfAnsweredQuestion + 1
+        }), ()=>{
+            if(this.state.nextQuestion === undefined){
+                this.endGame();
+            }else{
+                this.displayQuestions(this.state.questions, this.state.currentQuestion, this.state.nextQuestion, this.state.previousQuestion)   
+
+            }
+        })
+    }
+    /**
+     * This function is use to set Timer for Quiz.
+     */
+    startTimer = ()=>{
+        const countDownTime = Date.now() + 180000;
+        this.interval = setInterval(()=>{
+        const now = new Date();
+            const distance = countDownTime- now;
+
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+
+            if (distance &lt; 0) {
+                clearInterval(this.interval);
+                this.setState({
+                    time : {
+                        minutes :0,
+                        seconds :0
+                    }
+                }, ()=>{
+                   this.endGame();
+                })
+            }else{
+                this.setState({
+                    time : {
+                        minutes,
+                        seconds
+                    }
+                })
+            }
+        }, 1000)
+    }
+/**
+ * This function is use to define the logic for end the Quiz.
+ */
+    endGame = ()=>{
+        alert("Quiz has ended!");
+        const { state } = this;
+        const playerStats ={
+            score : state.score,
+            numberOfQuestions:state.numberOfQuestions,
+            numberOfAnsweredQuestion: state.correctAnswer + state.wrongAnswers,
+            correctAnswer : state.correctAnswers,
+            wrongAnswer : state.wrongAnswers,
+
+        }
+        console.log("player stats ", playerStats);
+        setTimeout(()=>{
+            this.props.history.push('/play/QuizSummary', playerStats)
+        }, 1000)
+        
+    }
+    /**
+     * This function is use to set button desable oe enable on your own limitations.
+     */
+ handleDisableButton=()=>{
+        if(this.state.previousQuestion===undefined &amp;&amp; this.state.currentQuestionIndex===0){
+            this.setState({
+                previousButtonDisabled : true
+            })
+        }else{
+            this.setState({
+                previousButtonDisabled: false
+            })
+        }
+        if(this.state.nextQuestion===undefined &amp;&amp; this.state.currentQuestionIndex+1=== this.state.numberOfQuestions){
+            this.setState({
+               nextButtonDisabled: true
+            })
+        }else{
+            this.setState({
+                nextButtonDisabled: false
+            })
+        }
+    }
+    render() {
+      const { currentQuestion, currentQuestionIndex, numberOfQuestions, time } = this.state;
+        
+        return (
+           
+              &lt;Fragment>
+       {/**
+         * This is use to give browser name of this Application.
+         */}
+                  &lt;Helmet>&lt;title>Quiz Page&lt;/title>&lt;/Helmet>
+                  &lt;Fragment>
+                      &lt;audio ref = {this.correctSound} src={correctNotification}>&lt;/audio>
+                      &lt;audio ref = {this.wrongSound} src={wrongNotification}>&lt;/audio>
+                      &lt;audio ref = {this.buttonSound} src={buttonNotification}>&lt;/audio>
+                  &lt;/Fragment>
+                  &lt;div>
+              &lt;div className="questions">
+                  &lt;h1>Quiz Mode&lt;/h1>
+                  &lt;div className="lifeline-container">
+            &lt;p className="lifeline">&lt;span>&lt;img src={Lifeline} alt="life-line" className="img-size"/> &lt;/span>&lt;/p>
+            &lt;p>&lt;span>&lt;img src={Bulb} alt="life-line" className="img-size"/> &lt;/span> &lt;span className="lifeline">&lt;/span>&lt;/p>
+                  &lt;/div>
+                  &lt;div className="lifeline-container">
+        &lt;p>&lt;span className="lifeline">{currentQuestionIndex + 1 } of {numberOfQuestions}&lt;/span>&lt;/p>
+        &lt;p> &lt;span>&lt;img src={Countdown} alt="timer" className="img-size"/>&lt;/span>&lt;span className="lifeline">{time.minutes} : {time.seconds}&lt;/span>&lt;/p>
+                  &lt;/div>
+                  &lt;h5>{currentQuestion.question} &lt;/h5>
+                  &lt;div className="options-container">
+                    &lt;p onClick={this.handleOptionClick} className="option">{currentQuestion.optionA}&lt;/p>
+                    &lt;p onClick={this.handleOptionClick} className="option">{currentQuestion.optionB}&lt;/p>
+                  &lt;/div>
+                  &lt;div className="options-container">
+                    &lt;p onClick={this.handleOptionClick} className="option">{currentQuestion.optionC}&lt;/p>
+                    &lt;p onClick={this.handleOptionClick} className="option">{currentQuestion.optionD}&lt;/p>
+                  &lt;/div>
+                  &lt;div className="button-container">
+                  &lt;button
+                   className={classnames('', {'disable' : this.state.previousButtonDisabled})}
+                   id="previous-button"
+                    onClick={this.handleButtonClick}>
+                        Previous
+                        &lt;/button>
+                  &lt;button
+                   className={classnames('', {'disable' : this.state.nextButtonDisabled})}
+                   id="next-button"
+                    onClick={this.handleButtonClick}>
+                        Next
+                        &lt;/button>
+                  &lt;button id="quit-button" onClick={this.handleButtonClick}>Quit&lt;/button>
+              &lt;/div>
+              &lt;/div>
+            
+            &lt;/div>
+            &lt;/Fragment>
+        )
+    }
+}
+
+export default Play
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Login_Login.html">Login</a></li><li><a href="Play_Play.html">Play</a></li><li><a href="QuizSummary_QuizSummary.html">QuizSummary</a></li><li><a href="Registeration_Registeration.html">Registeration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Home">Home</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Thu Apr 30 2020 20:13:00 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

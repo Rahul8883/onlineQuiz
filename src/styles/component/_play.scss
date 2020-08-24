@@ -1,0 +1,137 @@
+.questions {
+    background-color: $off-white;
+    border-left: 5px solid $blue;
+    width: 70%;
+    margin: $lg auto 0 auto;
+    padding: $sm $md;
+    .lifeline-container {
+        display: flex;
+        justify-content: space-between;
+    }
+    .lifeline {
+        position: relative;
+        top: -3px;
+    }
+    h1 {
+        font-size: $xlg;
+        text-align: center;
+    }
+    // p {
+    //     font-size: $sm;
+    // }
+    h5 {
+        font-size: 1.2rem;
+        margin-bottom: $lg;
+        line-height: 1.5;
+        text-align: center;
+    }
+    .options-container {
+        display: inline-block;
+        width: 50%;
+    }
+    .option {
+        background-color: $blue;
+        border-radius: $button-radius;
+        color: $white;
+        cursor: pointer;
+        margin: $md auto;
+        padding: $normal;
+        transition: 0.3s linear all;
+        text-align: center;
+        width: 90%;
+    }
+    .lifeline {
+        font-size: $sm;
+        font-weight: 700;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    .img-size {
+        width: 30px;
+    }
+}
+
+.option:hover {
+    background-color: darken($blue, 20%);
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+    margin: 0 auto $sm auto;
+    padding: $md;
+    width: 80%;
+}
+
+.button-container button {
+    border: none;
+    color: $off-white;
+    cursor: pointer;
+    font-family: $quicksand;
+    margin-right: $md;
+    padding: $xs $sm;
+}
+
+.button-container button:first-child {
+    background-color: darken($blue, 10%);
+    box-shadow: $shadow;
+    transition: 0.2s linear all;
+}
+
+.button-container button:first-child:hover {
+    background-color: darken($blue, 20%);
+}
+
+.button-container button:nth-child(2) {
+    background-color: $green;
+    box-shadow: $shadow;
+    transition: 0.2s linear all;
+}
+
+.button-container button:first-child:hover {
+    background-color: darken($blue, 10%);
+}
+
+.button-container button:last-child {
+    background-color: $red;
+    box-shadow: $shadow;
+    transition: 0.2s linear all;
+}
+
+.button-container button:first-child:hover {
+    background-color: darken($red, 10%);
+}
+
+#submit-button {
+    padding: 5px 30px;
+    background-color: #2072ffed;
+    font-size: 18px;
+    color: #fff;
+    font-weight: 600;
+    font-family: Acronym;
+}
+
+#QuestionBoard {
+    width: 10.5em;
+    height: 37vh;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 2px 0px 28px;
+    margin-left: 15px;
+    border-radius: 10px;
+    justify-content: center;
+    color: #e66c0a;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+}
+
+#QuestionBoardData {
+    height: 45px;
+    width: 45px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+}

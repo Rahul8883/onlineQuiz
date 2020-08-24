@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: quiz/QuizSummary.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: quiz/QuizSummary.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component, Fragment } from 'react'
+import Helmet from 'react-helmet'
+import checkCircle from '../../assets/check-circle.svg';
+import {Link} from 'react-router-dom'
+export class QuizSummary extends Component {
+    /**
+     * 
+     * @param {props} props The component receives the argument as a props object.
+     */
+    constructor(props) {
+        super(props)
+    
+        this.state = {
+             score :0,
+             numberOfQuestions : 0,
+             numberOfAnsweredQuestion : 0,
+             correctAnswer : 0,
+             wrongAnswer : 0,
+        }
+    }
+    
+    componentWillMount (){
+        const { state } = this.props.history.location
+        this.setState({
+            score : (state.score / state.numberOfQuestions) * 100 ,
+            numberOfAnsweredQuestion : state.numberOfAnsweredQuestion,
+            numberOfQuestions : state.numberOfQuestions,
+            correctAnswer : state.correctAnswer,
+            wrongAnswer : state.wrongAnswer
+        })
+    }
+    render() {
+        const { state } = this.props.location
+        let stats, remark;
+        const userScore = this.state.score
+        if(userScore &lt;= 30 ){
+            remark = 'You need more practice!';
+        }else if (userScore > 30 &amp;&amp; userScore &lt;= 30){
+            remark = 'Better Luck next time';
+        }else if(userScore &lt;= 70 &amp;&amp; userScore > 50){
+            remark = 'You can do better';
+        }else if (userScore >= 71 &amp;&amp; userScore &lt;= 84){
+            remark = 'You did greate!';
+        }else{
+            remark = 'You\'re an absolute genius!';
+        }
+        if( state !==undefined){
+            stats = (
+                &lt;Fragment>
+                       {/**
+                         * This is use to give browser name of this Application.
+                         */}
+                &lt;Helmet>&lt;title>Summary - Quiz App&lt;/title>&lt;/Helmet>
+                &lt;div className="checkCircle">
+                    &lt;span > &lt;img className="circle" src={checkCircle} alt="check circle"/>&lt;/span>
+                &lt;/div>
+                &lt;h1>Quiz has ended &lt;/h1>
+                &lt;div className="Total-score">
+                &lt;div className="container stats">
+            &lt;h4>{remark}&lt;/h4>
+            &lt;h2>Your Score : {this.state.score.toFixed(0)}&amp;#37;&lt;/h2>
+           
+            &lt;span className="stat-left"> Total number of question : &lt;/span>
+            &lt;span className="right">{this.state.numberOfQuestions}&lt;/span>&lt;br/>
+
+            &lt;span className="stat-left"> Number of Attemted Question  : &lt;/span>
+            &lt;span className="right">{this.state.numberOfAnsweredQuestion}&lt;/span>&lt;br/>
+
+            &lt;span className="stat-left"> Number of Correct Answer : &lt;/span>
+            &lt;span className="right">{this.state.correctAnswer}&lt;/span>&lt;br/>
+
+            &lt;span className="stat-left"> Number of wrong Answer : &lt;/span>
+            &lt;span className="right">{this.state.wrongAnswer}&lt;/span>   
+
+            &lt;/div>
+
+                &lt;/div>
+                &lt;section>
+                    &lt;ul>
+                        &lt;li>
+                            &lt;Link to = '/'>Back to Home Page&lt;/Link>
+                        &lt;/li>
+                        &lt;li>
+                            &lt;Link to = '/play/quiz'>Play Again&lt;/Link>
+                        &lt;/li>
+                    &lt;/ul>
+                &lt;/section>
+                &lt;/Fragment>
+            )
+        }else { 
+            stats = (
+                &lt;section>
+                &lt;h1 className="no-stats"> No Statistics Available&lt;/h1>
+                &lt;ul>
+                    &lt;li>
+                        &lt;Link to = '/'>Back to Home Page&lt;/Link>
+                    &lt;/li>
+                    &lt;li>
+                        &lt;Link to = '/play/quiz'>Take a Quiz&lt;/Link>
+                    &lt;/li>
+            &lt;/ul>
+            &lt;/section>
+            )
+        }
+        return (
+            &lt;div>
+               &lt;Fragment>
+                   &lt;Helmet>&lt;title>Quiz App - Summary &lt;/title>&lt;/Helmet>
+                   {/**
+                    * This is use to display summary of the student.
+                    */}
+                  &lt;div className="quiz-summary">
+                   {stats}
+                   &lt;/div>
+               &lt;/Fragment>
+            &lt;/div>
+        )
+    }
+}
+
+export default QuizSummary
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Login_Login.html">Login</a></li><li><a href="Play_Play.html">Play</a></li><li><a href="QuizSummary_QuizSummary.html">QuizSummary</a></li><li><a href="Registeration_Registeration.html">Registeration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Home">Home</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Thu Apr 30 2020 20:13:00 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

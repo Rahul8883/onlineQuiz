@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Login.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Login.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component,Fragment } from 'react'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import LockIcon from '@material-ui/icons/Lock';
+import Helmet from "react-helmet";
+import {Link} from 'react-router-dom'
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+export class Login extends Component {
+    /**
+     * 
+     * @param {props} Property The component receives the argument as a props object. 
+     */
+    constructor(props) {
+        super(props)
+    
+        this.state = {
+             email :"",
+             password : "",
+             Email : localStorage.getItem('email'),
+             Password : localStorage.getItem('password'),
+             snackbarOpen: false,
+             snackbarMsg: "",
+            open : false
+        }
+    }
+    handleClose=()=>{
+        this.setState({
+            open : true
+        })
+    }
+    /**
+     * 
+     * @param {e} event Every action perform on browser. 
+     */
+    handleEmail =(e)=>{
+        const email = e.target.value
+        this.setState({email})
+    }
+    handlePassword = (e) =>{
+        const password = e.target.value
+        this.setState({password})
+    }
+  /**
+   * After Compleate validation, this handler is use to submit the Login details and make access to main Quiz page.
+   */
+    handleSubmit=()=>{
+        if (this.state.email=== "") {
+            this.setState({
+                snackbarOpen: true,
+                snackbarMsg: "Email cann't be Empty !!"
+            })
+        }else if (!/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/.test(this.state.email)) {
+            console.log("entered", /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/.test(this.state.email));
+            this.setState({
+                snackbarOpen: true,
+                snackbarMsg: "Invalid Email..!"
+            })
+        }else if(this.state.password=== ""){
+            this.setState({
+                snackbarOpen: true,
+                snackbarMsg: "Password cann't be Empty !!"
+            })
+        }else if (this.state.password.length &lt; 6) {
+            this.setState({
+                snackbarOpen: true,
+                snackbarMsg: "password must be of atleast 6 characters..!!"
+            })
+        } else if(this.state.email===this.state.Email &amp;&amp; this.state.password===this.state.Password){
+            this.setState({
+                snackbarOpen: true,
+                snackbarMsg: "Login Successfully"
+            })
+            this.props.history.replace("/play/instruction");
+        }
+    }
+
+    render() {
+        return (
+            &lt;Fragment>
+         {/**
+         * This is use to give browser name of this Application.
+         */}
+            &lt;Helmet> &lt;title>Quiz App -  Home&lt;/title>&lt;/Helmet>
+            &lt;div id='Modal'>
+                &lt;section>
+                &lt;div style={{ textAlign:"center"}}>
+                &lt;img src ={require ('../assets/landingPageIcon.svg')} alt="tpglogo" style={{width:"4rem", textAlign:"center", marginTop:"15px"}}/>
+            &lt;/div>
+                           &lt;h2>Quiz-App-Login&lt;/h2>
+                                 &lt;div className="input-div">
+                             &lt;AccountCircleIcon/>
+                               &lt;input type='text' name='username' placeholder='Username' value={this.state.email} onChange={this.handleEmail}/>&lt;/div>
+                               &lt;div className="input-div">
+                                   &lt;LockIcon/>
+                               &lt;input className="input-field" type='password' name='password' placeholder='Password' value={this.state.password} onChange={this.handlePassword}/>&lt;/div>
+                               &lt;div className="singIn-button" onClick={this.handleSubmit}>&lt;button> Sign In&lt;/button>&lt;/div>
+                             &lt;div className="singIn-button">
+                             &lt;Link to="/">Go To Home&lt;/Link>&lt;/div>
+                              &lt;/section>
+                              {/**
+                               * This Tag is use to show the Validation error message
+                               */}
+                              &lt;Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.snackbarOpen}
+                    autoHideDuration={1000}
+                    onClose={this.snackbarClose}
+                    message={&lt;span id="message-id">{this.state.snackbarMsg}&lt;/span>}
+                    action={[
+                        &lt;IconButton
+                            onClick={this.handleClose}
+                        >
+                            &lt;CloseIcon onClick={this.snackbarClose} />
+                        &lt;/IconButton>
+                    ]}/>
+                        &lt;/div>
+                      &lt;/Fragment>
+        )
+    }
+}
+/**
+ * Make available for another file and folder.
+ */
+export default Login
+
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Login_Login.html">Login</a></li><li><a href="Play_Play.html">Play</a></li><li><a href="QuizSummary_QuizSummary.html">QuizSummary</a></li><li><a href="Registeration_Registeration.html">Registeration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Home">Home</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Thu Apr 30 2020 20:13:00 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

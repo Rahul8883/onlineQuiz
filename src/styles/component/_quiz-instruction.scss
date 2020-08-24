@@ -1,0 +1,48 @@
+// body {
+//     background-color: #ffa500;
+// }
+.main-instruction {
+    display: flex;
+    justify-content: center;
+    width: 1005;
+}
+
+.instruction {
+    border: 1px solid darken($off-white, 10%);
+    width: 60%;
+    border-radius: 5px;
+    margin-top: $lg;
+    margin-bottom: $lg;
+    padding: $sm $lg;
+    h1 {
+        color: $off-black;
+        font-size: $md;
+        text-align: center;
+    }
+    p {
+        color: $off-black;
+        font-size: $sm;
+        text-align: center;
+        border-bottom: 2px solid;
+    }
+    .browser-default {
+        padding-left: 30px;
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+    img {
+        width: 80%;
+        height: 50%;
+    }
+    .commonds-operation {
+        display: flex;
+        justify-content: space-around;
+    }
+}
+
+@media(max-width: $md-breakpoint) {
+    .instruction {
+        width: 100% !important;
+        height: 150% !important;
+    }
+}
